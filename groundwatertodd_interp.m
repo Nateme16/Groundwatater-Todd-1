@@ -111,10 +111,27 @@ subplot (2, 1, 2);
 plot(X,policy)
 
 
+
 toc/60
 
+xq=0:1:n;
+vq1 = interp1(X,v,xq);
+plot(X,v,'o',xq,vq1);
+title('(Default) Linear Interpolation');
 
 
+
+valueint=@(w,x) -(u1(w,x)+beta*interpvalue( (x - (rec+(re-1).*w.*alpha(x))./(A.*S)),v,X,n))
+
+for i=1:n;
+    
+    x=X(i);
+    
+policyint(i)= fminsearch(@(w)valueint(w,x),0);
+
+end
+
+plot(policyint)
 
 
 
