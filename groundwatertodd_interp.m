@@ -100,7 +100,7 @@ for b=1:n;
 end;
 
 
-
+%%Interpolation Code
 
 
 valuefit=fit(X',v,'cubicinterp')  % interpolates cubic function to value function
@@ -122,16 +122,14 @@ toc/60
 
 %% Show the results
 
-subplot (3, 1, 1);
+subplot (2, 1, 1);
 plot(X,valuefit(X)); % plot results
 title('Optimal value for current elevation (from sea level)');
 xlabel('Water Table Elevation');
 ylabel('Present discounted value');
 
-subplot (3, 1, 2);
+subplot (2, 1, 2);
 plot(X,policyint)
 
 
-%subplot (3, 1, 3);
-%plot(X,policy)
 
