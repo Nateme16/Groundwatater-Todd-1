@@ -25,5 +25,3 @@ year=(1871:1:2010)'
 plot(year,rain_yearly)
 
 
-
- 
