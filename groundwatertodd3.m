@@ -39,7 +39,7 @@ u1 = @(w,x)  (((((r+w).^2)./2.*k) - ((g.*(r+w))./k) - (c0+c1.*x)*w)).*alpha(x) +
 tol = 1e-4; % convergence tolerance
 maxit = 1000; % maximum number of loop iterations
 
-n =1000; % n specifies how fine our grid of capital holdings will be
+n =100; % n specifies how fine our grid of capital holdings will be
 X = linspace(min_k,max_k,n); % an evenly spaced grid
 
 % pre-compute the return function on the entire grid of states and possible
