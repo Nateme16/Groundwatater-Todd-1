@@ -1,23 +1,6 @@
-function [policyopt] = findpolicy(n)
+function [policyopt valuefit alpha policy policyint v X] = findpolicy(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
 
-
-tic
-beta = .96;   % discount factor
-r=1   %average rain
-k=-.89  %Slope of demand curve
-g=1.48  %Intercept of demand curve
-c0=.1664   %fixed pump cost
-c1=-.0001664  %variable pump cost
-A= 625    %Area of aquifer
-rec=40    %Aquifer Recharge
-S=.17   %Storitivity
-re=.2   %percent returned irrigation water
-
-
-% maximum capital possible in this model
-max_k = 800;
-min_k = 400;
-alpha=@(x) (x/max_k )*A
+alpha=@(x) ((x-min_k)/(max_k-min_k))*A
 
 % Gamma is the choice set for next period's capital given current capital
 % holdings (x). We will use Gamma(x) to compute the return function to make
@@ -28,17 +11,8 @@ Gamma = @(x) x + (1/(A*S))*rec;
 u1 = @(w,x)  (((((r+w).^2)./2.*k) - ((g.*(r+w))./k) - (c0+c1.*x)*w)).*alpha(x) + A-alpha(x).*((r.^2)/(2.*k.* - (g.*r)./k)) ; % profit from water pumped (1 period)
 %u2= @(x)  (r.^2)/2.*k.*alpha - (g.*r)./k  dyrland only
 
-w=[0:.01:1]  %test of value function;;
-x=100;
-u1(w,x);
-plot(w,ans);
 
 
-%% Value function iteration parameters
-tol = 1e-4; % convergence tolerance
-maxit = 500; % maximum number of loop iterations
-
-%n =2000; % n specifies how fine our grid of capital holdings will be
 X = linspace(min_k,max_k,n); % an evenly spaced grid
 
 % pre-compute the return function on the entire grid of states and possible
@@ -101,22 +75,23 @@ end;
 
 %%Interpolation Code
 
+v(1)=v(2) ;   %makes value at 0 water a very large negative number instead of -inf
+
 
 valuefit=fit(X',v,'cubicinterp')  % interpolates cubic function to value function
 
-
-
-valueint=@(w,x) -(u1(w,x)+beta*valuefit((x + (rec+(re-1).*w.*alpha(x))./(A.*S)))) % this is the function to optimize
+valueint=@(w,x) -(u1(w,x)+ beta.*valuefit((x + (rec + (re-1).*w.*alpha(x))./(A.*S)))) % this is the function to optimize
 
 for i=1:n; %loops over water levels
-    
     x=X(i);
     
-policyint(i)= fminsearch(@(w)valueint(w,x),.01); % calculates optimal policy at levels
+[policyint(i) fval(i)]= fmincon(@(w)valueint(w,x),.2,[],[],[],[],0,x); % calculates optimal policy at levels
 
+if(policyint(i)<=0);
+    policyint(i)=0;
+end
 end
 
-toc/60
 
 
 %% Show the results
