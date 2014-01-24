@@ -17,45 +17,76 @@ max_k = 800; % max water level
 min_k = 400;  % min water level
 tol = 1e-4; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations
-n=10000
+n=2000
 tic
 %Returns cubic interpolation of optimal policy and value function and area
 %function
-[optimalchoice optimalvalue alpha policy policyint v X R]=findpolicy(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
+[optimalchoice optimalvalue alpha policy policyint v X u1 ]=findpolicy(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
 
 
 %Iterate it through time
 
-j=2000    %nubmer of years
-xstart=800 %initial level
-x=zeros(1,j) 
-x(1)=xstart
-w= zeros(size(x))
+j=2000    %nubmer of years;
+xstart=800 %initial level;
+x=zeros(1,j) ;
+x2=zeros(1,j) ;
+x(1)=xstart;
+x2(1)=xstart;
+optimw= zeros(size(x));
+myop= zeros(size(x));
 
 
-for i=1:j
+for i=1:j;
    
     %if(x(i) <= .0000000001);
      %    fprintf('zero');
      %    break;
    % end;
     
-    w(i)=optimalchoice(x(i));
+    optimw(i)=optimalchoice(x(i));
     
-    x(i+1)= x(i) + ( r - (1-re)*w(i)*alpha(x(i))) / (A*S); %move stock forward
+    myop(i)= fminsearch(@(w) -u1(w,x2(i)),.2);
+
     
+    x(i+1)= x(i) + (( rec - (1-re)*optimw(i)*alpha(x(i))) / (A*S)); %move stock forward
+    x2(i+1)= x2(i) + (( rec - (1-re)*myop(i)*alpha(x2(i))) / (A*S));
+    
+   
 end
 
+optimtot= alpha(x(1:end-1)).*optimw
+myoptot= alpha(x2(1:end-1)).*myop(i)
 % plot results
 
 subplot (2, 1, 1);
 plot(x); 
 title('Water Level Through Time');
-xlabel('Water Table Elevation');
-ylabel('Years');
+ylabel('Water Table Elevation');
+xlabel('Years');
+hold on
+subplot (2, 1, 1);
+plot(x2); 
+title('Water Level Through Time');
+ylabel('Water Table Elevation');
+xlabel('Years');
+hold on
+
+
 
 subplot (2, 1, 2);
-plot(w)
+
+plot(optimtot)
+title('Water Extracted over Time');
+ylabel('Acre Feet Total');
+xlabel('Years');
+
+hold on
+subplot (2, 1, 2);
+plot(myoptot)
+title('Water Extracted over Time');
+ylabel('Acre Feet Total');
+xlabel('Years');
+
 
 toc/60
 

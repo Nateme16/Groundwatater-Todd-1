@@ -1,4 +1,4 @@
-function [policyopt valuefit alpha policy policyint v X R] = findpolicy(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
+function [policyopt valuefit alpha policy policyint v X u1 ] = findpolicy(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
 
 alpha=@(x) ((x-min_k)/(max_k-min_k))*A
 
