@@ -16,12 +16,12 @@ re=.2   %percent returned irrigation water
 max_k = 800; % max water level 
 min_k = 400;  % min water level
 tol = 1e-4; % convergence tolerance
-maxit = 2000; % maximum number of loop iterations
+maxit = 3000; % maximum number of loop iterations
 n=10000
 tic
 %Returns cubic interpolation of optimal policy and value function and area
 %function
-[optimalchoice optimalvalue alpha policy policyint v X]=findpolicy(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
+[optimalchoice optimalvalue alpha policy policyint v X R]=findpolicy(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
 
 
 %Iterate it through time

@@ -1,4 +1,4 @@
-function [policyopt valuefit alpha policy policyint v X] = findpolicy(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
+function [policyopt valuefit alpha policy policyint v X R] = findpolicy(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
 
 alpha=@(x) ((x-min_k)/(max_k-min_k))*A
 
@@ -75,10 +75,10 @@ end;
 
 %%Interpolation Code
 
-v(1)=v(2) ;   %makes value at 0 water a very large negative number instead of -inf
+v(1)=v(2)-10e2 ;   %makes value at 0 water a very large negative number instead of -inf
 
 
-valuefit=fit(X',v,'smoothingspline')  % interpolates cubic function to value function
+valuefit=fit(X',v,'cubicinterp')  % interpolates cubic function to value function
 
 valueint=@(w,x) -(u1(w,x)+ beta.*valuefit((x + (rec + (re-1).*w.*alpha(x))./(A.*S)))) % this is the function to optimize
 
@@ -103,9 +103,24 @@ xlabel('Water Table Elevation');
 ylabel('Present discounted value');
 
 subplot (2, 1, 2);
-plot(X,policyint)
+plot(X(1:end),policyint)
 
-policyopt=fit(X',policyint','cubicinterp')
+
+% Set up fittype and options.
+ft = fittype( 'exp2' );
+opts = fitoptions( ft );
+opts.Display = 'Off';
+opts.Lower = [-Inf -Inf -Inf -Inf];
+opts.Robust = 'LAR';
+opts.StartPoint = [0.289279112027984 0.0614232257589408 -6.00343199211108e-05 -4.75588348957778];
+opts.Upper = [Inf Inf Inf Inf];
+opts.Normalize = 'on';
+
+
+% Fit model to data.
+
+
+policyopt=fit(X(1:end)',policyint',ft,opts)
 
 
 end
