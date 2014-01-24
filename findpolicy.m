@@ -78,14 +78,14 @@ end;
 v(1)=v(2) ;   %makes value at 0 water a very large negative number instead of -inf
 
 
-valuefit=fit(X',v,'cubicinterp')  % interpolates cubic function to value function
+valuefit=fit(X',v,'smoothingspline')  % interpolates cubic function to value function
 
 valueint=@(w,x) -(u1(w,x)+ beta.*valuefit((x + (rec + (re-1).*w.*alpha(x))./(A.*S)))) % this is the function to optimize
 
 for i=1:n; %loops over water levels
     x=X(i);
     
-[policyint(i) fval(i)]= fmincon(@(w)valueint(w,x),.2,[],[],[],[],0,x); % calculates optimal policy at levels
+[policyint(i) fval(i)]= fminsearch(@(w)valueint(w,x),.2); % calculates optimal policy at levels
 
 if(policyint(i)<=0);
     policyint(i)=0;
