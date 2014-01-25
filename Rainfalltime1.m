@@ -43,8 +43,6 @@ if DWpVal < 0.05; fprintf('WARNING: residuals from regression appear to be seria
 end
 
 E=CoefConfInt(:,2)-CoefConfInt(:,1)
-
-
 errorbar([1,2,3,4],Coef(2:end,:),E(2:end,:))
 
 

@@ -17,8 +17,8 @@ min_k = 400;  % min water level
 tol = 1e-4; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations
 n=10
-r=[.5,1]'
-P=[.5,.5]'
+r=[.25,.5,.75,1]'
+P=[.25,.25,.25,.25]'
 
 
 
@@ -48,7 +48,7 @@ for i = 1:n % loop over the capital states;
     x = X(i);
     for j = 1:n % loop over next period's capital states;
         y = X(j);
-        for e=1:size(r)
+        for e=1:size(r) %loop over realizations of r
             
         
         R(i,j,e) = -Inf; % set the default return to negative infinity
@@ -66,7 +66,7 @@ end
 
 
 %% Value function iteration loop
-v = zeros(n,1); % initialize value function "guess" to zeros
+v = zeros(n,size(r,1)); % initialize value function "guess" to zeros
 tv = v; % pre-allocate space for the updated value function
 
 % loop until either we converge or we hit the maximum number of iterations
@@ -74,7 +74,11 @@ for i=1:maxit
     % loop over all possible capital states
     for j=1:n
         % use the bellman mapping T(v) to map v into tv
-        [tv(j) I(j)] = max(R(j,:) + beta *  v');
+        for e=1:size(r,1)
+        
+        [tv(j,e) I(:,j)] = max(R(j,:,e)' + beta.* v*P)
+         
+        end
         
        % policy(1,j)= wp(j,I(j));
     end
@@ -91,23 +95,26 @@ for i=1:maxit
     
     % update the old value function values with the new ones
     v = tv;
-    
 end
 
 %Recover the policy function
-for b=1:n;
+%for b=1:n;
     
-    policy(1,b)=wp(b,I(b));
+    %policy(1,b)=wp(b,I(b));
     
-end;
+%end;
 
 
 %%Interpolation Code
 
-v(1)=v(2)-10e2 ;   %makes value at 0 water a very large negative number instead of -inf
+v(1,:)=v(2,:)-10e2 ;   %makes value at 0 water a very large negative number instead of -inf
 
+for e= 1:size(r,1)
+    
+valuefit(e)=fit(X',v(:,e),'cubicinterp')  % interpolates cubic function to each value function column
+object=valuefit(e)
+end
 
-valuefit=fit(X',v,'cubicinterp')  % interpolates cubic function to value function
 
 valueint=@(w,x) -(u1(w,x)+ beta.*valuefit((x + (rec + (re-1).*w.*alpha(x))./(A.*S)))) % this is the function to optimize
 

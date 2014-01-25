@@ -21,6 +21,8 @@ n=2000
 tic
 %Returns cubic interpolation of optimal policy and value function and area
 %function
+
+
 [optimalchoice optimalvalue alpha policy policyint v X u1 ]=findpolicy(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
 
 
