@@ -46,6 +46,14 @@ E=CoefConfInt(:,2)-CoefConfInt(:,1)
 errorbar([1,2,3,4],Coef(2:end,:),E(2:end,:))
 
 
+%%Make Graphs for rainfall over time
+
+
+xmean=mean(rain_yearlyinches)
+
+plot(year,(rain_yearlyinches-xmean))
+
+
 
 
     

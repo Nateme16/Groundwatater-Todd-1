@@ -16,7 +16,7 @@ max_k = 800; % max water level
 min_k = 400;  % min water level
 tol = 1e-4; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations
-n=10
+n=200
 r=[.25,.5,.75,1]'
 P=[.25,.25,.25,.25]'
 
@@ -76,7 +76,7 @@ for i=1:maxit
         % use the bellman mapping T(v) to map v into tv
         for e=1:size(r,1)
         
-        [tv(j,e) I(:,j)] = max(R(j,:,e)' + beta.* v*P)
+        [tv(j,e) I(:,j)] = max(R(j,:,e)' + beta.* v*P);
          
         end
         
@@ -97,35 +97,48 @@ for i=1:maxit
     v = tv;
 end
 
+surf(r,X,v)
 %Recover the policy function
 %for b=1:n;
     
     %policy(1,b)=wp(b,I(b));
     
-%end;
+%end;r
 
 
 %%Interpolation Code
 
 v(1,:)=v(2,:)-10e2 ;   %makes value at 0 water a very large negative number instead of -inf
 
-for e= 1:size(r,1)
-    
-valuefit(e)=fit(X',v(:,e),'cubicinterp')  % interpolates cubic function to each value function column
-object=valuefit(e)
-end
+
+[xData, yData, zData] = prepareSurfaceData( r, X, v );
+
+% Set up fittype and options.
+ft = 'cubicinterp';
+opts = fitoptions( ft );
+opts.Normalize = 'on';
+
+% Fit model to data.
+[valuefit, gof] = fit( [xData, yData], zData, ft, opts );
 
 
-valueint=@(w,x) -(u1(w,x)+ beta.*valuefit((x + (rec + (re-1).*w.*alpha(x))./(A.*S)))) % this is the function to optimize
+
+valueint=@(w,x,r) -(u1(w,x,r)+ beta.*valuefit(r,(x + (rec + (re-1).*w.*alpha(x))./(A.*S)))) % this is the function to optimize
 
 for i=1:n; %loops over water levels
+
     x=X(i);
     
-[policyint(i) fval(i)]= fminsearch(@(w)valueint(w,x),.2); % calculates optimal policy at levels
+    for e=1:size(r,1)  %loop over realizations of rainfall
+        
+[policyint(i,e) fval(i,e)]= fminsearch(@(w)valueint(w,x,r(e)),.2); % calculates optimal policy at levels
 
 if(policyint(i)<=0);
     policyint(i)=0;
 end
+    end
+    
+    
 end
 
 
