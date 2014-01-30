@@ -4,7 +4,7 @@
 %Finds optimal value function for parameters:
 clear all
 beta = .96;   % discount factor
-r=1   %average rain
+r=7.9635/12   %average rain
 k=-.89  %Slope of demand curve
 g=1.48  %Intercept of demand curve
 c0=.1664   %fixed pump cost
@@ -17,7 +17,7 @@ max_k = 800; % max water level
 min_k = 400;  % min water level
 tol = 1e-4; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations
-n=2000
+n=100
 tic
 %Returns cubic interpolation of optimal policy and value function and area
 %function
@@ -54,8 +54,8 @@ for i=1:j;
    
 end
 
-optimtot= alpha(x(1:end-1)).*optimw
-myoptot= alpha(x2(1:end-1)).*myop(i)
+optimtot= alpha(x(1:end-1)).*optimw;
+myoptot= alpha(x2(1:end-1)).*myop;
 % plot results
 
 subplot (2, 1, 1);
@@ -85,6 +85,17 @@ title('Water Extracted over Time');
 ylabel('Acre Feet Total');
 xlabel('Years');
 
+
+for i=1:j
+    
+    benefitopt(i)=  exp(-(1-beta)*i)*    u1(optimw(i),x(i)).*A;
+    benefitmyop(i)=  exp(-(1-beta)*i)* u1(myop(i),x2(i)).*A;
+
+end
+
+benefitopttot=sum(benefitopt)
+benefitmyoptot=sum(benefitmyop)
+benefitopttot/benefitmyoptot
 
 toc/60
 

@@ -1,27 +1,4 @@
-%function [policyopt valuefit alpha policy policyint v X u1 ] = findpolicystochastic(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
-
-
-clear all
-beta = .96;   % discount factor
-r=1   %average rain
-k=-.89  %Slope of demand curve
-g=1.48  %Intercept of demand curve
-c0=.1664   %fixed pump cost
-c1=-.0001664  %variable pump cost
-A= 625    %Area of aquifer
-rec=40    %Aquifer Recharge
-S=.17   %Storitivity
-re=.2   %percent returned irrigation water
-max_k = 800; % max water level 
-min_k = 400;  % min water level
-tol = 1e-4; % convergence tolerance
-maxit = 3000; % maximum number of loop iterations
-n=200
-r=[.25,.5,.75,1]'
-P=[.25,.25,.25,.25]'
-
-
-
+function [policyopt valuefit alpha policy policyint v X u1 ] = findpolicystochastic3(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit,P)
 
 
 alpha=@(x) ((x-min_k)/(max_k-min_k))*A
@@ -32,7 +9,7 @@ alpha=@(x) ((x-min_k)/(max_k-min_k))*A
 
 Gamma = @(x) x + (1/(A*S))*rec;
 
-u1 = @(w,x,r)  (((((r+w).^2)./2.*k) - ((g.*(r+w))./k) - (c0+c1.*x)*w)).*alpha(x) + A-alpha(x).*((r.^2)/(2.*k.* - (g.*r)./k)) ; % profit from water pumped (1 period)
+u1 = @(w,x,r)  (((((r+w).^2)./2.*k) - ((g.*(r+w))./k) - (c0+c1.*x).*w)).*alpha(x) + A-alpha(x).*((r.^2)./(2.*k.* - (g.*r)./k)) ; % profit from water pumped (1 period)
 %u2= @(x)  (r.^2)/2.*k.*alpha - (g.*r)./k  dyrland only
 
 
@@ -48,7 +25,7 @@ for i = 1:n % loop over the capital states;
     x = X(i);
     for j = 1:n % loop over next period's capital states;
         y = X(j);
-        for e=1:size(r) %loop over realizations of r
+        for e=1:size(r,1) %loop over realizations of r
             
         
         R(i,j,e) = -Inf; % set the default return to negative infinity
@@ -80,12 +57,12 @@ for i=1:maxit
          
         end
         
-       % policy(1,j)= wp(j,I(j));
+        policy(1,j)= wp(j,I(j));
     end
     
     % compute the "distance" between the old and new value functions
     diff = max(abs(tv - v));
-    fprintf('Iteration %3d: %.6f\n',i,diff);
+    %fprintf('Iteration %3d: %.6f\n',i,diff);
 
     % check for convergence
     if(diff < tol);
@@ -104,7 +81,6 @@ surf(r,X,v)
     %policy(1,b)=wp(b,I(b));
     
 %end;r
-
 
 %%Interpolation Code
 
@@ -142,39 +118,30 @@ end
 end
 
 
+%% Fit optimal policy function
 
-%% Show the results
-
-subplot (2, 1, 1);
-plot(X,valuefit(X)); % plot results
-title('Optimal value for current elevation (from sea level)');
-xlabel('Water Table Elevation');
-ylabel('Present discounted value');
-
-subplot (2, 1, 2);
-plot(X(1:end),policyint)
-
+[xData, yData, zData] = prepareSurfaceData( r, X, policyint );
 
 % Set up fittype and options.
-ft = fittype( 'exp2' );
+ft = 'cubicinterp';
 opts = fitoptions( ft );
-opts.Display = 'Off';
-opts.Lower = [-Inf -Inf -Inf -Inf];
-opts.Robust = 'LAR';
-opts.StartPoint = [0.289279112027984 0.0614232257589408 -6.00343199211108e-05 -4.75588348957778];
-opts.Upper = [Inf Inf Inf Inf];
 opts.Normalize = 'on';
 
-
 % Fit model to data.
+[policyopt, gof] = fit( [xData, yData], zData, ft, opts );
 
+% Plot fit with data.
+figure( 'Name', 'untitled fit 1' );
+h = plot( policyopt, [xData, yData], zData );
+legend( h, 'untitled fit 1', 'policyint vs. r, X', 'Location', 'NorthEast' );
+% Label axes
+xlabel( 'r' );
+ylabel( 'X' );
+zlabel( 'policyint' );
+grid on
+view( -45.5, 46.0 );
 
-policyopt=fit(X(1:end)',policyint',ft,opts)
-
-
-%end
-
-
+end
 
 
 
