@@ -102,7 +102,7 @@ xlabel('Years');
 %% Calculate total discounted benefits
 for i=1:j
     
-    benefitopt(i)=  exp(-(1-beta)*i)*    u1(optimw(i),x(i),rn(i)).*A;
+    benefitopt(i)=  exp(-(1-beta)*i)* u1(optimw(i),x(i),rn(i)).*A;
     benefitmyop(i)=  exp(-(1-beta)*i)* u1(myop(i),x2(i),rn(i)).*A;
 
 end
@@ -112,6 +112,19 @@ benefitoptmyop=sum(benefitmyop)
 
 benefitopttot/benefitoptmyop
 
+
+load('/Users/nateme16/Documents/MATLAB/Groundwatater Todd 1/optimalvaluedet.mat')
+
+%% Buffer value through time
+buffvalopt=(optimalvaluedet(x)-optimalvaluedet(400)).*A
+buffvaloptstoch=(optimalvalue(rn,x(1:end-1))-optimalvalue(rn,401)).*A
+
+buffdiffopt= buffvaloptstoch- buffvalopt(1:end-1)
+
+buffvalmyop=(optimalvaluedet(x2)-optimalvaluedet(400))*A
+buffvalmyopstoch=(optimalvalue(rn,x2(1:end-1))-optimalvalue(rn,401))*A
+
+buffdiffmyop= buffvalmyopstoch- buffvalmyop(1:end-1)
 
 toc/60
 
