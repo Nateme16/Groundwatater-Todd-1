@@ -97,8 +97,6 @@ opts.Normalize = 'on';
 % Fit model to data.
 [valuefit, gof] = fit( [xData, yData], zData, ft, opts );
 
-
-
 valueint=@(w,x,r) -(u1(w,x,r)+ beta.*valuefit(r,(x + (rec + (re-1).*w.*alpha(x))./(A.*S)))) % this is the function to optimize
 
 for i=1:n; %loops over water levels
