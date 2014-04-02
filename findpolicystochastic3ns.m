@@ -9,7 +9,7 @@ alpha=@(x) (x/x)*A
 
 Gamma = @(x) x + (1/(A*S))*rec;
 
-u1 = @(w,x,r)  (((((r+w).^2)./2.*k) - ((g.*(r+w))./k) - (c0+c1.*x).*w)).*alpha(x) + A-alpha(x).*((r.^2)./(2.*k.* - (g.*r)./k)) ; % profit from water pumped (1 period)
+u1 = @(w,x,r)  (((((r+w).^2)./2.*k) - ((g.*(r+w))./k) - (c0+c1.*x).*w)).*alpha(x) + (A-alpha(x)).*((r.^2)./(2.*k.* - (g.*r)./k)) ; % profit from water pumped (1 period)
 %u2= @(x)  (r.^2)/2.*k.*alpha - (g.*r)./k  dyrland only
 
 

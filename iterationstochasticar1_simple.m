@@ -38,6 +38,17 @@ tic
 %Iterate it through time
 %%NOT DONE YET FOR THIS CODE CORRECTLY!%%
 
+
+for n=1:size(r,1)
+    for i=1:size(X,2)
+
+myop(i,n)= fminsearch(@(w) -u1(w,X(i),r(n)),.2);
+
+
+    end
+end
+
+
 xstart=800 %initial level;
 x=zeros(1,j) ;
 x2=zeros(1,j) ;
@@ -46,15 +57,13 @@ x2(1)=xstart;
 optimw= zeros(size(x));
 myop= zeros(size(x));
 
-rn(1)=randsample(rain_yearlyinches,1,true)
+rn(1)=randsample(r,1,true)
 
-for i=1:j
-    rn(i+1)= 4.701501+.4102023.*rn(i) + randsample(err,1,true);
-    rn(i+1)=roundtowardvec(rn(i+1),rain_yearlyinches,'round'); 
+for i=1:j;% creates j length rainfall time series
+    ind=randp(prob(:,find(r==rn(i)))',1,1);
+    rn(i+1)=r(ind)   ;
 end
-
-
-rn=rn./12 
+ 
 
 mean(rn)
 

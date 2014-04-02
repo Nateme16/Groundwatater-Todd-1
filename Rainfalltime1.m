@@ -53,7 +53,7 @@ xmean=mean(rain_yearlyinches)
 
 plot(year,(rain_yearlyinches-xmean))
 
-%%
+%%Fit a distribution (maximum likelihood method)
 
 
 
