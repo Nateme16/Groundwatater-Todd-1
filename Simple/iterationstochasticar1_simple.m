@@ -20,7 +20,7 @@ max_k = 800; % max water level
 min_k = 400;  % min water level
 tol = 1e-4; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations
-n=100 %size of grid space of groundwater height
+n=100%size of grid space of groundwater height
 
 r=[.55 .65 .7]' %Expected rainfall states
 
@@ -128,9 +128,9 @@ end
 benefitopttot=sum(benefitopt)
 benefitoptmyop=sum(benefitmyop)
 
-benefitopttot/benefitoptmyop
+ratio= benefitopttot/benefitoptmyop
 
-
+save ar1_simple
 toc/60
 
 

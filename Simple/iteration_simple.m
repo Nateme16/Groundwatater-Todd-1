@@ -3,11 +3,8 @@
 
 %Finds optimal value function for parameters:
 clear all
-load('/Users/nateme16/Documents/MATLAB/Groundwatater Todd 1/rainyearlyinches.mat')
-load('/Users/nateme16/Documents/MATLAB/Groundwatater Todd 1/ar1start.mat')
-
 beta = .96;   % discount factor
-r=1   %average rain
+r=7.9635/12   %average rain
 k=-.89  %Slope of demand curve
 g=1.48  %Intercept of demand curve
 c0=.1664   %fixed pump cost
@@ -20,25 +17,16 @@ max_k = 800; % max water level
 min_k = 400;  % min water level
 tol = 1e-4; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations
-n=100 %size of grid space of groundwater height
-
-r=rain_yearlyinches./12 %Expected rainfall states
-P=zeros(size(r))
-P(:,:)=1/size(r,1) %Expected probability of rainfall sates
-
-j=2000    %nubmer of years in iteration;
+n=200
 tic
-
-[prob]= ar1trans(rain_yearlyinches,err);
-
-
 %Returns cubic interpolation of optimal policy and value function and area
 %function
+[optimalchoice optimalvalue alpha policy policyint v X u1 ]=findpolicy(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
 
-[optimalchoice optimalvalue alpha policy policyint v X u1 ]=findpolicystochastic3ar1(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit,prob)
 
 %Iterate it through time
 
+j=2000    %nubmer of years;
 xstart=800 %initial level;
 x=zeros(1,j) ;
 x2=zeros(1,j) ;
@@ -47,17 +35,6 @@ x2(1)=xstart;
 optimw= zeros(size(x));
 myop= zeros(size(x));
 
-rn(1)=randsample(rain_yearlyinches,1,true)
-
-for i=1:j
-    rn(i+1)= 4.701501+.4102023.*rn(i) + randsample(err,1,true);
-    rn(i+1)=roundtowardvec(rn(i+1),rain_yearlyinches,'round'); 
-end
-
-
-rn=rn./12 
-
-mean(rn)
 
 for i=1:j;
    
@@ -66,20 +43,22 @@ for i=1:j;
      %    break;
    % end;
     
+    optimw(i)=optimalchoice(x(i));
     
-    optimw(i)=optimalchoice(rn(i),x(i));
+    myop(i)= fminsearch(@(w) -u1(w,x2(i)),.2);
     
-    myop(i)= fminsearch(@(w) -u1(w,x2(i),rn(i)),.2);
-
-    
+    if (x2(i)<=min_k);
+        myop(i)=0.08;
+    end;
+        
     x(i+1)= x(i) + (( rec - (1-re)*optimw(i)*alpha(x(i))) / (A*S)); %move stock forward
     x2(i+1)= x2(i) + (( rec - (1-re)*myop(i)*alpha(x2(i))) / (A*S));
+    
    
 end
 
-optimtot= alpha(x(1:end-1)).*optimw
-myoptot= alpha(x2(1:end-1)).*myop
-
+optimtot= alpha(x(1:end-1)).*optimw;
+myoptot= alpha(x2(1:end-1)).*myop;
 % plot results
 
 subplot (2, 1, 1);
@@ -109,20 +88,18 @@ title('Water Extracted over Time');
 ylabel('Acre Feet Total');
 xlabel('Years');
 
-%% Calculate total discounted benefits
+
 for i=1:j
     
-    benefitopt(i)=  exp(-(1-beta)*i)*  u1(optimw(i),x(i),rn(i)).*A;
-    benefitmyop(i)=  exp(-(1-beta)*i)* u1(myop(i),x2(i),rn(i)).*A;
+    benefitopt(i)=  exp(-(1-beta)*i)*    u1(optimw(i),x(i)).*A;
+    benefitmyop(i)=  exp(-(1-beta)*i)* u1(myop(i),x2(i)).*A;
 
 end
 
 benefitopttot=sum(benefitopt)
-benefitoptmyop=sum(benefitmyop)
+benefitmyoptot=sum(benefitmyop)
+benefitopttot/benefitmyoptot
 
-benefitopttot/benefitoptmyop
-
-save ar1_1
 toc/60
-
+save det_1
 

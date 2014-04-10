@@ -4,7 +4,6 @@
 %Finds optimal value function for parameters:
 clear all
 load('/Users/nateme16/Documents/MATLAB/Groundwatater Todd 1/rainyearlyinches.mat')
-load('/Users/nateme16/Documents/MATLAB/Groundwatater Todd 1/ar1start.mat')
 
 beta = .96;   % discount factor
 r=1   %average rain
@@ -20,22 +19,21 @@ max_k = 800; % max water level
 min_k = 400;  % min water level
 tol = 1e-4; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations
-n=100 %size of grid space of groundwater height
+n=2%size of grid space of groundwater height
 
-r=rain_yearlyinches./12 %Expected rainfall states
+r=[.55 .65 .7]' %Expected rainfall states
 P=zeros(size(r))
 P(:,:)=1/size(r,1) %Expected probability of rainfall sates
 
 j=2000    %nubmer of years in iteration;
 tic
 
-[prob]= ar1trans(rain_yearlyinches,err);
 
 
 %Returns cubic interpolation of optimal policy and value function and area
 %function
 
-[optimalchoice optimalvalue alpha policy policyint v X u1 ]=findpolicystochastic3ar1(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit,prob)
+[optimalchoice optimalvalue alpha policy policyint v X u1 ]=findpolicystochastic3(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit,P)
 
 %Iterate it through time
 
@@ -47,16 +45,8 @@ x2(1)=xstart;
 optimw= zeros(size(x));
 myop= zeros(size(x));
 
-rn(1)=randsample(rain_yearlyinches,1,true)
 
-for i=1:j
-    rn(i+1)= 4.701501+.4102023.*rn(i) + randsample(err,1,true);
-    rn(i+1)=roundtowardvec(rn(i+1),rain_yearlyinches,'round'); 
-end
-
-
-rn=rn./12 
-
+rn=randsample(r,j,true) %random draws for rainfall realizations
 mean(rn)
 
 for i=1:j;
@@ -112,7 +102,7 @@ xlabel('Years');
 %% Calculate total discounted benefits
 for i=1:j
     
-    benefitopt(i)=  exp(-(1-beta)*i)*  u1(optimw(i),x(i),rn(i)).*A;
+    benefitopt(i)=  exp(-(1-beta)*i)* u1(optimw(i),x(i),rn(i)).*A;
     benefitmyop(i)=  exp(-(1-beta)*i)* u1(myop(i),x2(i),rn(i)).*A;
 
 end
@@ -122,7 +112,21 @@ benefitoptmyop=sum(benefitmyop)
 
 benefitopttot/benefitoptmyop
 
-save ar1_1
+save stoch_simple
+
+%load('/Users/nateme16/Documents/MATLAB/Groundwatater Todd 1/optimalvaluedet.mat')
+
+%% Buffer value through time
+%buffvalopt=(optimalvaluedet(x)-optimalvaluedet(400)).*A
+%buffvaloptstoch=(optimalvalue(rn,x(1:end-1))-optimalvalue(rn,401)).*A
+
+%buffdiffopt= buffvaloptstoch- buffvalopt(1:end-1)
+
+%buffvalmyop=(optimalvaluedet(x2)-optimalvaluedet(400))*A
+%buffvalmyopstoch=(optimalvalue(rn,x2(1:end-1))-optimalvalue(rn,401))*A
+
+%buffdiffmyop= buffvalmyopstoch- buffvalmyop(1:end-1)
+
 toc/60
 
 

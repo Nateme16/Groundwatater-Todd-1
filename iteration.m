@@ -21,7 +21,7 @@ n=100
 tic
 %Returns cubic interpolation of optimal policy and value function and area
 %function
-[optimalchoice optimalvalue alpha policy policyint v X u1 ]=findpolicyns(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
+[optimalchoice optimalvalue alpha policy policyint v X u1 ]=findpolicy(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
 
 
 %Iterate it through time
@@ -47,11 +47,10 @@ for i=1:j;
     
     myop(i)= fminsearch(@(w) -u1(w,x2(i)),.2);
     
-    if (x2(i)<=400);
-        myop(i)=0.0800;
+    if (x2(i)<=min_k);
+        myop(i)=0.08;
     end;
-
-    
+        
     x(i+1)= x(i) + (( rec - (1-re)*optimw(i)*alpha(x(i))) / (A*S)); %move stock forward
     x2(i+1)= x2(i) + (( rec - (1-re)*myop(i)*alpha(x2(i))) / (A*S));
     
@@ -102,5 +101,5 @@ benefitmyoptot=sum(benefitmyop)
 benefitopttot/benefitmyoptot
 
 toc/60
-
+save det_1
 

@@ -19,7 +19,7 @@ max_k = 800; % max water level
 min_k = 400;  % min water level
 tol = 1e-4; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations
-n=100 %size of grid space of groundwater height
+n=100%size of grid space of groundwater height
 
 r=rain_yearlyinches./12 %Expected rainfall states
 P=zeros(size(r))
@@ -112,19 +112,20 @@ benefitoptmyop=sum(benefitmyop)
 
 benefitopttot/benefitoptmyop
 
+save stoch_1
 
-load('/Users/nateme16/Documents/MATLAB/Groundwatater Todd 1/optimalvaluedet.mat')
+%load('/Users/nateme16/Documents/MATLAB/Groundwatater Todd 1/optimalvaluedet.mat')
 
 %% Buffer value through time
-buffvalopt=(optimalvaluedet(x)-optimalvaluedet(400)).*A
-buffvaloptstoch=(optimalvalue(rn,x(1:end-1))-optimalvalue(rn,401)).*A
+%buffvalopt=(optimalvaluedet(x)-optimalvaluedet(400)).*A
+%buffvaloptstoch=(optimalvalue(rn,x(1:end-1))-optimalvalue(rn,401)).*A
 
-buffdiffopt= buffvaloptstoch- buffvalopt(1:end-1)
+%buffdiffopt= buffvaloptstoch- buffvalopt(1:end-1)
 
-buffvalmyop=(optimalvaluedet(x2)-optimalvaluedet(400))*A
-buffvalmyopstoch=(optimalvalue(rn,x2(1:end-1))-optimalvalue(rn,401))*A
+%buffvalmyop=(optimalvaluedet(x2)-optimalvaluedet(400))*A
+%buffvalmyopstoch=(optimalvalue(rn,x2(1:end-1))-optimalvalue(rn,401))*A
 
-buffdiffmyop= buffvalmyopstoch- buffvalmyop(1:end-1)
+%buffdiffmyop= buffvalmyopstoch- buffvalmyop(1:end-1)
 
 toc/60
 
