@@ -4,11 +4,11 @@
 %Finds optimal value function for parameters:
 clear all
 beta = .96;   % discount factor
-r=7.9635/12   %average rain
-k=-.89  %Slope of demand curve
-g=1.48  %Intercept of demand curve
-c0=.1664   %fixed pump cost
-c1=-.0001664  %variable pump cost
+r= .6135   %average rain
+k=-.00346 %Slope of demand curve
+g=1.1569+r  %Intercept of demand curve
+c0=104   %fixed pump cost
+c1=-(104/1000) %variable pump cost
 A= 625    %Area of aquifer
 rec=40    %Aquifer Recharge
 S=.17   %Storitivity
@@ -17,16 +17,18 @@ max_k = 800; % max water level
 min_k = 400;  % min water level
 tol = 1e-4; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations
-n=200
+n=2000
 tic
+
 %Returns cubic interpolation of optimal policy and value function and area
 %function
-[optimalchoice optimalvalue alpha policy policyint v X u1 ]=findpolicy(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
+
+[optimalchoice optimalvalue alpha policy policyint v X u1 ]=findpolicyeom(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
 
 
 %Iterate it through time
 
-j=2000    %nubmer of years;
+j=200   %nubmer of years;
 xstart=800 %initial level;
 x=zeros(1,j) ;
 x2=zeros(1,j) ;
@@ -47,12 +49,9 @@ for i=1:j;
     
     myop(i)= fminsearch(@(w) -u1(w,x2(i)),.2);
     
-    if (x2(i)<=min_k);
-        myop(i)=0.08;
-    end;
-        
-    x(i+1)= x(i) + (( rec - (1-re)*optimw(i)*alpha(x(i))) / (A*S)); %move stock forward
-    x2(i+1)= x2(i) + (( rec - (1-re)*myop(i)*alpha(x2(i))) / (A*S));
+
+    x(i+1)= x(i) + + eom(rec,re,optimw(i),alpha(x(i)),S); %move stock forward
+    x2(i+1)= x2(i) +  eom(rec,re,myop(i),alpha(x2(i)),S);
     
    
 end
@@ -91,14 +90,14 @@ xlabel('Years');
 
 for i=1:j
     
-    benefitopt(i)=  exp(-(1-beta)*i)*    u1(optimw(i),x(i)).*A;
-    benefitmyop(i)=  exp(-(1-beta)*i)* u1(myop(i),x2(i)).*A;
+    benefitopt(i)=  exp(-(1-beta)*i)*  u1(optimw(i),x(i));
+    benefitmyop(i)=  exp(-(1-beta)*i)* u1(myop(i),x2(i));
 
 end
 
 benefitopttot=sum(benefitopt)
 benefitmyoptot=sum(benefitmyop)
-benefitopttot/benefitmyoptot
+ratio=benefitopttot/benefitmyoptot
 
 toc/60
 save det_1

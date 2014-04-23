@@ -1,17 +1,17 @@
 function [policyopt valuefit alpha policy policyint v X u1 ] = findpolicystochastic3(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit,prob)
 
 
-alpha=@(x) ((x-min_k)/(max_k-min_k))*A
-
-% Gamma is the choice set for next period's capital given current capital
-% holdings (x). We will use Gamma(x) to compute the return function to make
-% sure our choice for next period's capital is feasible. I.e. y <= Gamma(x)
 
 Gamma = @(x) x + (1/(A*S))*rec;
 
-u1 = @(w,x,r)  (((((r+w).^2)./2.*k) - ((g.*(r+w))./k) - (c0+c1.*x).*w)).*alpha(x) + (A-alpha(x)).*((r.^2)./(2.*k.* - (g.*r)./k)) ; % profit from water pumped (1 period)
-%u2= @(x)  (r.^2)/2.*k.*alpha - (g.*r)./k  dyrland only
+alpha=@(x) ((x-min_k)/(max_k-min_k))*A %area irrigated
 
+benefit= @(w,x,r) ((((r+w).^2)./(2.*k)) - ((g.*(r+w))./k)) %Benefit of irrigation
+cost= @(w,x) (c0+c1.*x)*w %cost of irrigation
+profitirr=@(w,x,r) (benefit(w,x,r)-cost(w,x)) % Profit Irrigation
+profitnonirr=@(r) (((r.^2)/(2.*k) )- ((g.*r)./k)) %Prift non-irrigated
+
+u1=@(w,x,r) profitirr(w,x,r)*alpha(x) + profitnonirr(r)*(A-alpha(x)) %profit area corrected together
 
 
 X = linspace(min_k,max_k,n); % an evenly spaced grid
