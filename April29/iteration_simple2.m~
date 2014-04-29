@@ -17,7 +17,10 @@ max_k = 800; % max water level
 min_k = 400;  % min water level
 tol = 1e-4; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations for value function convergence
-n=100 %Grid space over stock
+n=1000 %Grid space over stock
 
-%%Solve the 
+%% Solve the optimal value and policy function
+
+findpolicy_simple2(n,beta,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,tol,maxit)
+
 
