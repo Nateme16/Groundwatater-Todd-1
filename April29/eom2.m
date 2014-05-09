@@ -4,7 +4,7 @@
 % rec- fixed recharge (acre feet)
 %re- % of irrigation water returned to aquifer
 %irr- irrigated acerage
-%S- storativity (relates acer feet to change in height in feet)
+%S- storativity (relates acre feet to change in height in feet)
 
 function [xdot]= eom(rec,re,w,irr,S)
 
