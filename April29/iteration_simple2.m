@@ -17,7 +17,7 @@ max_k = 800; % max water level
 min_k = 400;  % min water level
 tol = 1e-10; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations for value function convergence
-n=100 %Grid space over stock
+n=10000 %Grid space over stock
 
 %% Solve the optimal value and policy function
 tic

@@ -17,7 +17,7 @@ max_k = 800; % max water level
 min_k = 400;  % min water level
 tol = 1e-4; % convergence tolerance
 maxit = 500; % maximum number of loop iterations for value function convergence
-n=500 %Grid space over stock
+n=10000 %Grid space over stock
 
 r=[.48 r 1.57]
 [prob]= [.5 .25 .25 ; .25 .5 .25; .25 .25 .5]'
@@ -28,8 +28,8 @@ tic
 
 for i=1:size(X,2);
     for j=1:size(r,2)
-    x=X(i);
- policy_myop(i,j)=fminsearch(@(w) -u12(w,r(j),k,g,c0,c1,A,rec,S,re,max_k,min_k,irrig(A,max_k,min_k,x),x),0);
+    t=X(i);
+ policy_myop(i,j)=fminsearch(@(w) -u12(w,r(j),k,g,c0,c1,A,rec,S,re,max_k,min_k,irrig(A,max_k,min_k,t),t),0);
     end
 end
 
@@ -38,8 +38,8 @@ end
 
 
 %Iterate it through time
-
-j=500   %nubmer of years;
+for z=1:10
+j=500  ; %nubmer of years;
 
 
 xstart=790 %initial level;
@@ -57,7 +57,7 @@ for i=1:j;% creates j length rainfall time series
     rn(i+1)=r(ind)   ;
 end
 
-mean(rn)
+mean(rn);
 
 for i=1:j;
    
@@ -68,14 +68,14 @@ for i=1:j;
     
     
     optimw(i)=policyopt(x(i),rn(i));
-    if (optimw(i)<0);
-     optimw(i)=0   ;
-    end;
+    %if (optimw(i)<0);
+     %optimw(i)=0   ;
+    %end;
     
     optimW(i)=optimw(i)*irrig(A,max_k,min_k,x2(i));
     
     myop(i)= fminsearch(@(w) -u12(w,rn(i),k,g,c0,c1,A,rec,S,re,max_k,min_k,irrig(A,max_k,min_k,x2(i)),x2(i)),0);
-    myopW(i)=myop(i)*irrig(A,max_k,min_k,x2(i))
+    myopW(i)=myop(i)*irrig(A,max_k,min_k,x2(i));
 
     x(i+1)= x(i)  + eom2(rec,re,optimw(i),irrig(A,max_k,min_k,x(i)),S); %move stock forward
     x2(i+1)= x2(i) +  eom2(rec,re,myop(i),irrig(A,max_k,min_k,x2(i)),S);
@@ -89,9 +89,10 @@ for i=1:j
     benefitmyop(i)=  exp(-(1-beta)*i)* u12(myop(i),rn(i),k,g,c0,c1,A,rec,S,re,max_k,min_k,irrig(A,max_k,min_k,x2(i)),x2(i));
 end
 
-benefitopttot=sum(benefitopt)
-benefitmyoptot=sum(benefitmyop)
-ratio=benefitopttot/benefitmyoptot
+benefitopttot(z)=sum(benefitopt)
+benefitmyoptot(z)=sum(benefitmyop)
+ratio(z)=benefitopttot/benefitmyoptot
+end
 
 %% plots to make
 
@@ -99,9 +100,9 @@ plot(x)
 hold on
 plot(x2)
 
-%plot(X,irrig(A,max_k,min_k,X).*policy);
-%hold on
-%plot(X,irrig(A,max_k,min_k,X).*policy_myop);
+plot(X,irrig(A,max_k,min_k,X).*policy);
+hold on
+plot(X,irrig(A,max_k,min_k,X).*policy_myop);
 
 plot(X,policy)
 hold on
@@ -111,3 +112,12 @@ ElapsedTime= toc/60
 
 h = datestr(clock,0);
 save (['ar12',h(1:11),'-',h(13:14),'-',h(16:17),'-',h(19:20)]);
+
+mean(ratio)
+std(ratio)
+mean(benefitopttot)
+mean(benefitmyoptot)
+mean(benefitopttot-benefitmyoptot)
+std(benefitopttot-benefitmyoptot)
+std(benefitopttot)
+std(benefitmyoptot)
