@@ -17,7 +17,7 @@ max_k = 800; % max water level
 min_k = 400;  % min water level
 tol = 1e-4; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations for value function convergence
-n=10000 %Grid space over stock
+n=500 %Grid space over stock
 
 r=[.48 r 1.57]
 P=[ .25 .5 .25 ]
@@ -61,9 +61,9 @@ for i=1:j;
    % end;
     
     optimw(i)=policyopt(x(i),rn(i));
-    if (optimw(i)<0);
-     optimw(i)=0   ;
-    end
+    %if (optimw(i)<0);
+   %  optimw(i)=0   ;
+   % end
     
     
     myop(i)= fminsearch(@(w) -u12(w,rn(i),k,g,c0,c1,A,rec,S,re,max_k,min_k,irrig(A,max_k,min_k,x2(i)),x2(i)),0);

@@ -23,7 +23,7 @@ for i = 1:n % loop over the capital states;
         R(i,j,e) = -Inf; % set the default return to negative infinity
         
         % check to see if next period's capital choice is feasible
-        if(y <= Gamma(x)&& y>= min_k && y<= max_k && 0<=((((x-y) - eom2(rec,re,0,irrig(A,max_k,min_k,x),S)).*(irrig(A,max_k,min_k,x)*S) )./(1-re))./irrig(A,max_k,min_k,x));
+        if (y <= Gamma(x)&&y>= min_k && y<= max_k && 0<=((((x-y) - eom2(rec,re,0,irrig(A,max_k,min_k,x),S)).*(irrig(A,max_k,min_k,x)*S) )./(1-re))./irrig(A,max_k,min_k,x));            % if so, set the appropriate return and corresponding policy 
             % if so, set the appropriate return and corresponding policy 
         wp(i,j,e)= ((((x-y) - eom2(rec,re,0,irrig(A,max_k,min_k,x),S)).*(irrig(A,max_k,min_k,x)*S) )./(1-re))./irrig(A,max_k,min_k,x) ;  % Policy (per irrigated acre) corresponding to grid space
         R(i,j,e)=u12(wp(i,j),r(e),k,g,c0,c1,A,rec,S,re,max_k,min_k,irrig(A,max_k,min_k,x),x); %profit from choice of policy
