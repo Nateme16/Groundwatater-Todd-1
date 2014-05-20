@@ -40,7 +40,7 @@ end
 
 
 %Iterate it through time
-for z=1:3;
+for z=1:10;
 j=500   %nubmer of years;
 xstart=790 %initial level;
 x=zeros(1,j) ;
@@ -85,6 +85,8 @@ benefitopttot(z)=sum(benefitopt)
 benefitmyoptot(z)=sum(benefitmyop)
 ratio(z)=benefitopttot/benefitmyoptot
 
+xx(:,z)=x
+xx2(:,z)=x2
 
 ElapsedTime= toc/60
 h = datestr(clock,0);

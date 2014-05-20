@@ -36,7 +36,7 @@ end
 %Iterate it through time
 
 j=1000   %nubmer of years;
-xstart=790 %initial level;
+xstart=800 %initial level;
 x=zeros(1,j) ;
 x2=zeros(1,j) ;
 x(1)=xstart;
