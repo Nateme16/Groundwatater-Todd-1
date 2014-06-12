@@ -17,7 +17,7 @@ max_k = 800; % max water level
 min_k = 400;  % min water level
 tol = 1e-4; % convergence tolerance
 maxit = 500; % maximum number of loop iterations for value function convergence
-n=10000 %Grid space over stock
+n=500 %Grid space over stock
 
 r=[.48 r 1.57]
 [prob]= [.5 .25 .25 ; .25 .5 .25; .25 .25 .5]'
@@ -38,7 +38,7 @@ end
 
 
 %Iterate it through time
-for z=1:10
+for z=1:55
 j=500  ; %nubmer of years;
 
 
@@ -92,6 +92,10 @@ end
 benefitopttot(z)=sum(benefitopt)
 benefitmyoptot(z)=sum(benefitmyop)
 ratio(z)=benefitopttot/benefitmyoptot
+
+xx(:,z)=x;
+xx2(:,z)=x2;
+
 end
 
 %% plots to make
