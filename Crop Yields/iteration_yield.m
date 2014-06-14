@@ -1,16 +1,16 @@
 
-%% Iteration Simple
+%% Iteration Simple Yield
 
 %Finds optimal value function for parameters:
 clear all
 beta = .96;   % discount factor
-r= 1.5   %average rain
+r= 1.5833    %average rain
 
 c0=104   %fixed pump cost
 c1=-(104/1000) %variable pump cost
 
 pc=4.4
-ps=4.4
+ps=4
 
 A= 625   %Area of aquifer
 rec=40 %*76250    %Aquifer Recharge
@@ -90,10 +90,4 @@ plot(X,policy_myop)
 ElapsedTime= toc/60
 
 h = datestr(clock,0);
-%save(['det_2',h(1:11),'-',h(13:14),'-',h(16:17),'-',h(19:20)]);
-
-
-
-plot(x(1:end-1),u12(myop,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,irrig(A,max_k,min_k,x2(1:end-1)),x2(1:end-1)))
-hold on
-plot(x(1:end-1),u12(optimw,r,k,g,c0,c1,A,rec,S,re,max_k,min_k,irrig(A,max_k,min_k,x(1:end-1)),x(1:end-1)))
+save(['det_yield',h(1:11),'-',h(13:14),'-',h(16:17),'-',h(19:20)]);
