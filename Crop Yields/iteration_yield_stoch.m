@@ -10,7 +10,7 @@ c0=104   %fixed pump cost
 c1=-(104/1000) %variable pump cost
 
 pc=4.4
-ps=4
+ps=4.4
 
 A= 625   %Area of aquifer
 rec=40 %*76250    %Aquifer Recharge
@@ -113,4 +113,4 @@ hold on
 %plot(X,policy_myop)
 
 h = datestr(clock,0);
-%save(['stoch2',h(1:11),'-',h(13:14),'-',h(16:17),'-',h(19:20)]);
+save(['stoch_yield',h(1:11),'-',h(13:14),'-',h(16:17),'-',h(19:20)]);

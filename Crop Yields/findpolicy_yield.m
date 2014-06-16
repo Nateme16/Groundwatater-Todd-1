@@ -7,7 +7,7 @@ function [policy policyopt v X R wp] = findpolicy_yield(n,beta,r,c0,c1,ps,pc,A,r
 %% Define payoff space (returns to pumping choice)
 Gamma =@(x) x + eom2(rec,re,0,irrig(A,max_k,min_k,x),S); %limit next period's water levels
 
-X = linspace(min_k+(min_k*.15),max_k,n); % an evenly spaced grid over water levels
+X = linspace(min_k+(min_k*.10),max_k,n); % an evenly spaced grid over water levels
 
 % pre-compute the return function on the entire grid of states and possible
 % choice variables
@@ -22,7 +22,7 @@ for i = 1:n % loop over the water states;
         % check to see if next period's water choice is feasible
         if(y <= Gamma(x) && y>= min_k && y<= max_k)% && 0<=((((x-y) - eom2(rec,re,0,irrig(A,max_k,min_k,x),S)).*(irrig(A,max_k,min_k,x)*S) )./(1-re))./irrig(A,max_k,min_k,x));
             % if so, set the appropriate return and corresponding policy 
-        wp(i,j)= ((((x-y) - eom2(rec,re,0,irrig(A,max_k,min_k,x),S)).*(irrig(A,max_k,min_k,x)*S) )./(1-re))./irrig(A,max_k,min_k,x) ;% Policy (per irrigated acre) corresponding to grid space
+        wp(i,j)= ((((x-y) - eom2(rec,re,0,irrig(A,max_k,min_k,x),S)).*((irrig(A,max_k,min_k,x)./.12)*S) )./(1-re))./irrig(A,max_k,min_k,x) ;% Policy (per irrigated acre) corresponding to grid space
         eomtest(i,j)=eom2(rec,re,0,irrig(A,max_k,min_k,x),S);
         % if (wp(i,j)<0);
            % wp(i,j)=0;

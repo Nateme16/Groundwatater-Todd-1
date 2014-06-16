@@ -1,5 +1,5 @@
 function [pi_tot]=pi_total_yield(w,r,c0,c1,ps,pc,irrig,A,x);
-
+farm=.12;
 a= -339.5043;
 b= 25.42806;
 c= -.2623373;
@@ -13,6 +13,6 @@ pic= pc.*cornyield(w,r,a,b,c,d) - costirr(c0,c1,x,w);
 
 pis= ps.*sorgyield(r,e,f,g,h);
 
-pi_tot=pic.*irrig + pis.*(A-irrig) ;
+pi_tot=pic.*irrig + pis.*((A*farm)-irrig) ;
 
 end

@@ -9,18 +9,18 @@ r= 1.5833    %average rain
 c0=104   %fixed pump cost
 c1=-(104/1000) %variable pump cost
 
-pc=4.4
-ps=4
+pc=4.47
+ps=4.25
 
-A= 625   %Area of aquifer
-rec=40 %*76250    %Aquifer Recharge
+A= 3110000 %Area of aquifer
+rec=40*(A/625)    %Aquifer Recharge
 S=.17   %Storitivity
 re=.2   %percent returned irrigation water
-max_k = 800; % max water level 
-min_k = 400;  % min water level
+max_k = 916; % max water level 
+min_k = 741;  % min water level
 tol = 1e-10; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations for value function convergence
-n=500 %Grid space over stock
+n=1000 %Grid space over stock
 
 %% Solve the optimal value and policy function
 tic
@@ -39,8 +39,8 @@ end
 
 %Iterate it through time
 
-j=1000   %nubmer of years;
-xstart=800 %initial level;
+j=500   %nubmer of years;
+xstart=916 %initial level;
 x=zeros(1,j) ;
 x2=zeros(1,j) ;
 x(1)=xstart;
