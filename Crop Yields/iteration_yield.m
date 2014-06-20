@@ -4,10 +4,10 @@
 %Finds optimal value function for parameters:
 clear all
 beta = .96;   % discount factor
-r= 1.5833    %average rain
+r= 1.6102    %average rain
 
 c0=104   %fixed pump cost
-c1=-(104/1000) %variable pump cost
+c1=-(104/943) %variable pump cost
 
 pc=4.47
 ps=4.25
@@ -19,8 +19,8 @@ re=.2   %percent returned irrigation water
 max_k = 916; % max water level 
 min_k = 741;  % min water level
 tol = 1e-10; % convergence tolerance
-maxit = 3000; % maximum number of loop iterations for value function convergence
-n=1000 %Grid space over stock
+maxit = 4000; % maximum number of loop iterations for value function convergence
+n=10000 %Grid space over stock
 
 %% Solve the optimal value and policy function
 tic
@@ -79,13 +79,13 @@ hold on
 plot(x2)
 
 
-plot(X,irrig(A,max_k,min_k,X).*policy);
-hold on
-plot(X,irrig(A,max_k,min_k,X).*policy_myop);
+%plot(X,irrig(A,max_k,min_k,X).*policy);
+%hold on
+%plot(X,irrig(A,max_k,min_k,X).*policy_myop);
 
-plot(X,policy)
-hold on
-plot(X,policy_myop)
+%plot(X,policy)
+%hold on
+%plot(X,policy_myop)
 
 ElapsedTime= toc/60
 

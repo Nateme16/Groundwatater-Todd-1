@@ -2,7 +2,7 @@
 %This function takes inputs from iteration file and returns optimal value
 % and policy functions
 
-function [policy policyopt v X R wp] = findpolicy_yield_stoch(n,beta,r,P,c0,c1,ps,pc,A,rec,S,re,max_k,min_k,tol,maxit)
+function [policy policyopt v X R wp] = findpolicy_yield_AR1(n,beta,r,c0,c1,ps,pc,A,rec,S,re,max_k,min_k,tol,maxit,prob)
 
 %% Define payoff space (returns to pumping choice)
 Gamma =@(x) x + eom2(rec,re,0,irrig(A,max_k,min_k,x),S); %limit next period's water levels
@@ -49,7 +49,7 @@ for i=1:maxit
         % use the bellman mapping T(v) to map v into tv
         for e=1:size(r,2)
             
-        [tv(j,e) I(j,e)] = max(R(j,:,e) + (beta.* v*P')');
+        [tv(j,e) I(j,e)] = max(R(j,:,e) + (beta.* v*prob(:,e))');
         policy(j,e)= wp(j,I(j,e));
         end
     end

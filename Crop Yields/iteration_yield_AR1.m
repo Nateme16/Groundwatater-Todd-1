@@ -20,32 +20,33 @@ max_k = 916; % max water level
 min_k = 741;  % min water level
 tol = 1e-10; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations for value function convergence
-n=1000 %Grid space over stock
+n=10000 %Grid space over stock
 
 r=[1.25 r 2]
-P=[0.30952381 0.378378378 0.3121]
+[prob]= [.4 .31 .28 ; .21 .37 .40; .43 .25 .33]'
 
 %% Solve the optimal value and policy function
 tic
+[policy policyopt v X R wp] = findpolicy_yield_AR1(n,beta,r,c0,c1,ps,pc,A,rec,S,re,max_k,min_k,tol,maxit,prob);
 
-[policy policyopt v X R wp] = findpolicy_yield_stoch(n,beta,r,P,c0,c1,ps,pc,A,rec,S,re,max_k,min_k,tol,maxit);
 
 for i=1:size(X,2);
-    for j=1:size(r,2);
+    for j=1:size(r,2)
     t=X(i);
  policy_myop(i,j)=fminsearch(@(w) -pi_total_yield(w,r(j),c0,c1,ps,pc,irrig(A,max_k,min_k,t),A,t),.1);
     end
 end
 
 
-
 %% iteration
 
 
 %Iterate it through time
-for z=1:10;
-j=500   %nubmer of years;
-xstart=916 %initial level;
+for z=1:2
+j=500  ; %nubmer of years;
+
+
+xstart=910 %initial level;
 x=zeros(1,j) ;
 x2=zeros(1,j) ;
 x(1)=xstart;
@@ -53,8 +54,12 @@ x2(1)=xstart;
 optimw= zeros(size(x));
 myop= zeros(size(x));
 
-rn=randsample(r,j,true); %random draws for rainfall realizations;
+rn(1)=randsample(r,1,true);
 
+for i=1:j;% creates j length rainfall time series
+    ind=randp(prob(:,find(r==rn(i)))',1,1);
+    rn(i+1)=r(ind)   ;
+end
 
 for i=1:j;
    
@@ -93,24 +98,24 @@ xx(:,z)=x;
 xx2(:,z)=x2;
 
 
-end
-ElapsedTime= toc/60
-plot(xx)
-hold on
-plot(xx2)
 
+end
 
 %% plots to make
 
-
+plot(xx)
+hold on
+plot(xx2)
 
 %plot(X,irrig(A,max_k,min_k,X).*policy);
 %hold on
 %plot(X,irrig(A,max_k,min_k,X).*policy_myop);
 
-%plot(X,policy(1:492))
+%plot(X,policy)
 %hold on
 %plot(X,policy_myop)
 
+ElapsedTime= toc/60
+
 h = datestr(clock,0);
-save(['stoch_yield',h(1:11),'-',h(13:14),'-',h(16:17),'-',h(19:20)]);
+save (['ar1_yield',h(1:11),'-',h(13:14),'-',h(16:17),'-',h(19:20)]);
