@@ -1,5 +1,5 @@
-function [pi_tot pis pic]=pi_total_yield(w,r,c0,c1,ps,pc,irrig,A,x);
-farm=.12;
+function [pi_tot pis pic]=pi_total_yield(w,r,c0,c1,ps,pc,irrig,A,x,farm);
+
 a= -339.5043;
 b= 25.42806;
 c= -.2623373;

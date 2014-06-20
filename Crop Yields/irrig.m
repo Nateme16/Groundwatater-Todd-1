@@ -6,9 +6,9 @@
 %min_k- minimum level of aquifer
 %x- Aquifer height
 
-function [irr dry]=irrig(A,max_k,min_k,x)
+function [irr dry]=irrig(A,max_k,min_k,x,farm)
 
-farm=.12;
+
 H= max_k-min_k;
 h= x-min_k;
 a=A*43560 ;%converts acers into square feet

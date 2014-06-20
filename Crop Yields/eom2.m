@@ -6,8 +6,7 @@
 %irr- irrigated acerage
 %S- storativity (relates acre feet to change in height in feet)
 
-function [xdot]= eom2(rec,re,w,irr,S)
-farm=.12;
+function [xdot]= eom2(rec,re,w,irr,S,farm)
 
 if (w>=0)
 xdot=(rec+((re-1).*(w.*irr)))./((irr./farm).*S);

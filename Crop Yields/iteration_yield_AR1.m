@@ -13,6 +13,7 @@ pc=4.47
 ps=4.25
 
 A= 3110000   %Area of aquifer
+farm=.12  %area of aquifer farmed 
 rec=40*(A/625)    %Aquifer Recharge
 S=.17   %Storitivity
 re=.2   %percent returned irrigation water
@@ -20,20 +21,20 @@ max_k = 916; % max water level
 min_k = 741;  % min water level
 tol = 1e-10; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations for value function convergence
-n=10000 %Grid space over stock
+n=100 %Grid space over stock
 
 r=[1.25 r 2]
 [prob]= [.4 .31 .28 ; .21 .37 .40; .43 .25 .33]'
 
 %% Solve the optimal value and policy function
 tic
-[policy policyopt v X R wp] = findpolicy_yield_AR1(n,beta,r,c0,c1,ps,pc,A,rec,S,re,max_k,min_k,tol,maxit,prob);
+[policy policyopt v X R wp] = findpolicy_yield_AR1(n,beta,r,c0,c1,ps,pc,A,rec,S,re,max_k,min_k,tol,maxit,prob,farm);
 
 
 for i=1:size(X,2);
     for j=1:size(r,2)
     t=X(i);
- policy_myop(i,j)=fminsearch(@(w) -pi_total_yield(w,r(j),c0,c1,ps,pc,irrig(A,max_k,min_k,t),A,t),.1);
+ policy_myop(i,j)=fminsearch(@(w) -pi_total_yield(w,r(j),c0,c1,ps,pc,irrig(A,max_k,min_k,t,farm),A,t,farm),.1);
     end
 end
 
@@ -46,7 +47,7 @@ for z=1:2
 j=500  ; %nubmer of years;
 
 
-xstart=910 %initial level;
+xstart=915 %initial level;
 x=zeros(1,j) ;
 x2=zeros(1,j) ;
 x(1)=xstart;
@@ -74,18 +75,18 @@ for i=1:j;
    % end
     
     
-    myop(i)=  fminsearch(@(w) - pi_total_yield(w,rn(i),c0,c1,ps,pc,irrig(A,max_k,min_k,x2(i)),A,x2(i)),.1); 
+    myop(i)=  fminsearch(@(w) - pi_total_yield(w,rn(i),c0,c1,ps,pc,irrig(A,max_k,min_k,x2(i),farm),A,x2(i),farm),.1); 
 
-    x(i+1)= x(i) + eom2(rec,re,optimw(i),irrig(A,max_k,min_k,x(i)),S); %move stock forward
-    x2(i+1)= x2(i) +  eom2(rec,re,myop(i),irrig(A,max_k,min_k,x2(i)),S);
+    x(i+1)= x(i) + eom2(rec,re,optimw(i),irrig(A,max_k,min_k,x(i),farm),S,farm); %move stock forward
+    x2(i+1)= x2(i) +  eom2(rec,re,myop(i),irrig(A,max_k,min_k,x2(i),farm),S,farm);
    
 end
 
 %% Get benefits
 for i=1:j
     
-    benefitopt(i)=  exp(-(1-beta)*i)*pi_total_yield(optimw(i),rn(i),c0,c1,ps,pc,irrig(A,max_k,min_k,x(i)),A,x(i));
-    benefitmyop(i)=  exp(-(1-beta)*i)* pi_total_yield(myop(i),rn(i),c0,c1,ps,pc,irrig(A,max_k,min_k,x2(i)),A,x2(i));
+    benefitopt(i)=  exp(-(1-beta)*i)*pi_total_yield(optimw(i),rn(i),c0,c1,ps,pc,irrig(A,max_k,min_k,x(i),farm),A,x(i),farm);
+    benefitmyop(i)=  exp(-(1-beta)*i)* pi_total_yield(myop(i),rn(i),c0,c1,ps,pc,irrig(A,max_k,min_k,x2(i),farm),A,x2(i),farm);
   
 end
 
@@ -107,9 +108,9 @@ plot(xx)
 hold on
 plot(xx2)
 
-%plot(X,irrig(A,max_k,min_k,X).*policy);
+%plot(X,irrig(A,max_k,min_k,X,farm).*policy);
 %hold on
-%plot(X,irrig(A,max_k,min_k,X).*policy_myop);
+%plot(X,irrig(A,max_k,min_k,X,farm).*policy_myop);
 
 %plot(X,policy)
 %hold on
