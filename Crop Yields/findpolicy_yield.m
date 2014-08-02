@@ -6,8 +6,9 @@ function [policy policyopt v X R wp] = findpolicy_yield(n,beta,r,c0,c1,ps,pc,A,r
 
 %% Define payoff space (returns to pumping choice)
 Gamma =@(x) x + eom2(rec,re,0,irrig(A,max_k,min_k,x,farm),S,farm); %limit next period's water levels
+%
 
-X = linspace(min_k+(min_k*.05),max_k,n); % an evenly spaced grid over water levels
+X = linspace(min_k+(min_k*0),max_k,n); % an evenly spaced grid over water levels
 %
 % pre-compute the return function on the entire grid of states and possible
 % choice variables

@@ -14,7 +14,7 @@ if (w>=0)
 pic = pc.*cornyield(w,r,a,b,c,d) - costirr(c0,c1,x,w);
 
 else 
-   pic=200*w;
+   pic=-10e10;
 end
 
 pis= ps.*sorgyield(r,e,f,g,h);

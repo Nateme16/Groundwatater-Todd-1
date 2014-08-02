@@ -24,7 +24,7 @@ for i = 1:n % loop over the water states;
         if(y <= Gamma(x) && y>= min_k && y<= max_k)% && 0<=((((x-y) - eom2(rec,re,0,irrig(A,max_k,min_k,x,farm),S,farm)).*(irrig(A,max_k,min_k,x,farm)*S) )./(1-re))./irrig(A,max_k,min_k,x,farm));
           
             % if so, set the appropriate return and corresponding policy 
-        wp(i,j,e)= ((((x-y) - eom2(rec,re,0,irrig(A,max_k,min_k,x,farm),S,farm)).*((irrig(A,max_k,min_k,x,farm)./.12)*S) )./(1-re))./irrig(A,max_k,min_k,x,farm) ;% Policy (per irrigated acre) corresponding to grid space
+        wp(i,j,e)= ((((x-y) - eom2(rec,re,0,irrig(A,max_k,min_k,x,farm),S,farm)).*((irrig(A,max_k,min_k,x,farm)./farm)*S) )./(1-re))./irrig(A,max_k,min_k,x,farm) ;% Policy (per irrigated acre) corresponding to grid space
        % eomtest(i,j,e)=eom2(rec,re,0,irrig(A,max_k,min_k,x),S,farm);
        
         
