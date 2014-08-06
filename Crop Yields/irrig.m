@@ -8,7 +8,7 @@
 
 function [irr dry]=irrig(A,max_k,min_k,x,farm)
 
-
+if (x>=min_k);
 H= max_k-(min_k);
 h= x-(min_k);
 a=A*43560 ;%converts acers into square feet
@@ -17,7 +17,12 @@ area = pi.*(h./(H./r)).^2; %area of cone above aquifer
 areaf=farm*area;
 irr=areaf./43560; %back to acers
 dry=(A*farm)-irr;
+%irr=A*farm;
+%dry=(A*farm)-irr;
 
-
+else
+    irr=0;
+    dry=(A*farm)-0;
+end
 
 end

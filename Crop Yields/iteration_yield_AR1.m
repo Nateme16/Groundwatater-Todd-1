@@ -1,10 +1,10 @@
 
-%% Iteration Stochastic Yield
+%% Iteration Stochastic AR1 Yield
 
 %Finds optimal value function for parameters:
 clear all
 beta = .96;   % discount factor
-r= 1.5833   %average rain
+r= 1.6101   %average rain
 
 c0=104   %fixed pump cost
 c1=-(104/943) %variable pump cost
@@ -21,7 +21,7 @@ max_k = 943; % max water level
 min_k = 741;  % min water level
 tol = 1e-10; % convergence tolerance
 maxit = 3000; % maximum number of loop iterations for value function convergence
-n=100 %Grid space over stock
+n=3000 %Grid space over stock
 
 r=[1.25 r 2]
 [prob]= [.4 .31 .28 ; .21 .37 .40; .43 .25 .33]'
@@ -43,7 +43,7 @@ end
 
 
 %Iterate it through time
-for z=1:2
+for z=1:10
 j=500  ; %nubmer of years;
 
 
@@ -74,9 +74,10 @@ for i=1:j;
    %  optimw(i)=0   ;
    % end
     
-    
+     if (x2(i)>=min_k)
     myop(i)=  fminsearch(@(w) - pi_total_yield(w,rn(i),c0,c1,ps,pc,irrig(A,max_k,min_k,x2(i),farm),A,x2(i),farm),2); 
-
+     end
+    
     benefitopt(i)=  exp(-(1-beta)*i)*pi_total_yield(optimw(i),rn(i),c0,c1,ps,pc,irrig(A,max_k,min_k,x(i),farm),A,x(i),farm);
     benefitmyop(i)=  exp(-(1-beta)*i)* pi_total_yield(myop(i),rn(i),c0,c1,ps,pc,irrig(A,max_k,min_k,x2(i),farm),A,x2(i),farm);
   
@@ -102,6 +103,9 @@ end
 plot(xx)
 hold on
 plot(xx2)
+
+plot(X,policy'.*repmat(irrig(A,max_k,min_k,X,farm),size(r,2),1))
+
 
 %plot(X,irrig(A,max_k,min_k,X,farm).*policy);
 %hold on

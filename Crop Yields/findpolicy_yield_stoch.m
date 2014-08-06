@@ -42,7 +42,7 @@ end
 v = zeros(n,size(r,2)); % initialize value function "guess" to zeros
 tv = v; % pre-allocate space for the updated value function
 % loop until either we converge or we hit the maximum number of iterations
-
+R(R==-inf)=-10e10;
 for i=1:maxit
     % loop over all possible capital states
     for j=1:n

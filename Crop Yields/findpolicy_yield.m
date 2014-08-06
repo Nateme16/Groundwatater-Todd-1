@@ -44,7 +44,7 @@ end
 v = zeros(n,1); % initialize value function "guess" to zeros
 tv = v; % pre-allocate space for the updated value function
 % loop until either we converge or we hit the maximum number of iterations
-%R(R==-inf)=-1e10;
+R(R==-inf)=-10e10;
 for i=1:maxit
   
     for j=1:n  % loop over all possible water states

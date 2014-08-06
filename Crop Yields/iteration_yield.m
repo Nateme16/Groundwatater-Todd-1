@@ -4,7 +4,7 @@
 %Finds optimal value function for parameters:
 clear all
 beta = .96;   % discount factor
-r= 1.6101  %average rain
+r= 1.6141  %average rain
 
 c0=104   %fixed pump cost
 c1=-(104/943) %variable pump cost
@@ -54,8 +54,10 @@ for i=1:j;
     
     optimw(i)=policyopt(x(i));
  
+    if (x2(i)>=min_k)
     myop(i)=  fminsearch(@(w) - pi_total_yield(w,r,c0,c1,ps,pc,irrig(A,max_k,min_k,x2(i),farm),A,x2(i),farm),2); 
-
+    end
+    
     benefitopt(i)=  exp(-(1-beta)*i)*  pi_total_yield(optimw(i),r,c0,c1,ps,pc,irrig(A,max_k,min_k,x(i),farm),A,x(i),farm);
     benefitmyop(i)=  exp(-(1-beta)*i)* pi_total_yield(myop(i),r,c0,c1,ps,pc,irrig(A,max_k,min_k,x2(i),farm),A,x2(i),farm);
   

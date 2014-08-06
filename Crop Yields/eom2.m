@@ -8,7 +8,7 @@
 
 function [xdot]= eom2(rec,re,w,irr,S,farm)
 
-%if (w>=0)
+%if (x>=741 |x<=943 )
 
 xdot1=(rec+((re-1).*(w.*irr)))./((irr./farm).*S);
 
@@ -19,8 +19,15 @@ else
 end
 
 %else
- %   xdot=(rec+((re-1).*(0.*irr)))./((irr./farm).*S);
+%   xdot=0 ;
 %end
 
 
 end
+
+
+%else
+ %   xdot=(rec+((re-1).*(0.*irr)))./((irr./farm).*S);
+%end
+
+

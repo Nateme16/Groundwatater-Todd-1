@@ -7,7 +7,7 @@ function [policy policyopt v X R wp] = findpolicy_yield_AR1(n,beta,r,c0,c1,ps,pc
 %% Define payoff space (returns to pumping choice)
 Gamma =@(x) x + eom2(rec,re,0,irrig(A,max_k,min_k,x,farm),S,farm); %limit next period's water levels
 
-X = linspace(min_k+(min_k*.05),max_k,n); % an evenly spaced grid over water levels
+X = linspace(min_k+(min_k*0),max_k,n); % an evenly spaced grid over water levels
 
 % pre-compute the return function on the entire grid of states and possible
 % choice variables
@@ -42,7 +42,7 @@ end
 v = zeros(n,size(r,2)); % initialize value function "guess" to zeros
 tv = v; % pre-allocate space for the updated value function
 % loop until either we converge or we hit the maximum number of iterations
-
+R(R==-inf)=-10e10;
 for i=1:maxit
     % loop over all possible capital states
     for j=1:n
