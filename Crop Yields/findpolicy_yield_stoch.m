@@ -2,7 +2,7 @@
 %This function takes inputs from iteration file and returns optimal value
 % and policy functions
 
-function [policy policyopt v X R wp] = findpolicy_yield_stoch(n,beta,r,P,c0,c1,ps,pc,A,rec,S,re,max_k,min_k,tol,maxit,farm)
+function [policy policyopt v X R wp] = findpolicy_yield_stoch(n,beta,r,P,c0,c1,ps,pc,pw,A,rec,S,re,max_k,min_k,tol,maxit,farm)
 
 %% Define payoff space (returns to pumping choice)
 Gamma =@(x) x + eom2(rec,re,0,irrig(A,max_k,min_k,x,farm),S,farm); %limit next period's water levels
@@ -28,7 +28,7 @@ for i = 1:n % loop over the water states;
        % eomtest(i,j,e)=eom2(rec,re,0,irrig(A,max_k,min_k,x),S,farm);
        
         
-        R(i,j,e)=pi_total_yield(wp(i,j,e),r(e),c0,c1,ps,pc,irrig(A,max_k,min_k,x,farm),A,x,farm); %profit from choice of policy
+        R(i,j,e)=pi_total_yield(wp(i,j,e),r(e),c0,c1,ps,pc,pw,irrig(A,max_k,min_k,x,farm),A,x,farm); %profit from choice of policy
         end
         end
       

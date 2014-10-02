@@ -12,14 +12,15 @@ function [xdot]= eom2(rec,re,w,irr,S,farm)
 
 xdot1=(rec+((re-1).*(w.*irr)))./((irr./farm).*S);
 
-if (xdot1<4);
+if (xdot1<10);
    xdot=xdot1;
 else
-    xdot=4;
+    xdot=10;
 end
 
+
 %else
-%   xdot=0 ;
+ %  xdot=0 ;
 %end
 
 

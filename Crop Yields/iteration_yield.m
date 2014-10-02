@@ -1,4 +1,5 @@
 
+
 %% Iteration Simple Yield
 
 %Finds optimal value function for parameters:
@@ -11,6 +12,7 @@ c1=-(104/943) %variable pump cost
 
 pc=4.47
 ps=4.25
+pw=
 
 A= 3110000 %Area of aquifer
 farm=.17 %1area of aquifer farmed 
@@ -26,11 +28,11 @@ n=10000 %Grid space over stock
 %% Solve the optimal value and policy function
 tic
 
-[policy policyopt v X R wp] = findpolicy_yield(n,beta,r,c0,c1,ps,pc,A,rec,S,re,max_k,min_k,tol,maxit,farm);
+[policy policyopt v X R wp] = findpolicy_yield(n,beta,r,c0,c1,ps,pc,pw,A,rec,S,re,max_k,min_k,tol,maxit,farm);
 
 for i=1:size(X,2);
     x=X(i);
- policy_myop(i)=fminsearch(@(w) -pi_total_yield(w,r,c0,c1,ps,pc,irrig(A,max_k,min_k,x,farm),A,x,farm),2);
+ policy_myop(i)=fminsearch(@(w) -pi_total_yield(w,r,c0,c1,ps,pc,pw,irrig(A,max_k,min_k,x,farm),A,x,farm),2);
     
 end
 
@@ -41,7 +43,7 @@ end
 %Iterate it through time
 
 j=500   %nubmer of years;
-xstart=916 %initial level;
+xstart=915 %initial level;
 x=zeros(1,j) ;
 x2=zeros(1,j) ;
 x(1)=xstart;
@@ -55,11 +57,11 @@ for i=1:j;
     optimw(i)=policyopt(x(i));
  
     if (x2(i)>=min_k)
-    myop(i)=  fminsearch(@(w) - pi_total_yield(w,r,c0,c1,ps,pc,irrig(A,max_k,min_k,x2(i),farm),A,x2(i),farm),2); 
+    myop(i)=  fminsearch(@(w) - pi_total_yield(w,r,c0,c1,ps,pc,pw,irrig(A,max_k,min_k,x2(i),farm),A,x2(i),farm),2); 
     end
     
-    benefitopt(i)=  exp(-(1-beta)*i)*  pi_total_yield(optimw(i),r,c0,c1,ps,pc,irrig(A,max_k,min_k,x(i),farm),A,x(i),farm);
-    benefitmyop(i)=  exp(-(1-beta)*i)* pi_total_yield(myop(i),r,c0,c1,ps,pc,irrig(A,max_k,min_k,x2(i),farm),A,x2(i),farm);
+    benefitopt(i)=  exp(-(1-beta)*i)*  pi_total_yield(optimw(i),r,c0,c1,ps,pc,pw,irrig(A,max_k,min_k,x(i),farm),A,x(i),farm);
+    benefitmyop(i)=  exp(-(1-beta)*i)* pi_total_yield(myop(i),r,c0,c1,ps,pc,pw,irrig(A,max_k,min_k,x2(i),farm),A,x2(i),farm);
   
     x(i+1)= x(i)  + eom2(rec,re,optimw(i),irrig(A,max_k,min_k,x(i),farm),S,farm); %move stock forward
 
