@@ -7,6 +7,7 @@
 %re- % of irrigation water returned to aquifer
 %irr- irrigated acerage
 %S- storativity (relates acre feet to change in height in feet)
+%farm is the % of initial area that is farmland of any type
 
 
 function [xdot]= eom2(rec,re,w,irr,S,farm)
