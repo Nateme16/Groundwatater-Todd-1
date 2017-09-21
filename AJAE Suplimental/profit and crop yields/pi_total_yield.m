@@ -12,7 +12,7 @@
 
 
 function [pi_tot pis pic]=pi_total_yield(w,r,c0,c1,ps,pc,pw,A,x,farm,max_k,min_k,init_k)
-%hard coded parameters of quadradic crop yield functions
+%hard coded parameters of quadradic crop yeild functions
 a= -339.5043;
 b= 25.42806;
 c= -.2623373;

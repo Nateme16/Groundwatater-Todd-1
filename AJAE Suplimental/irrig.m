@@ -11,7 +11,7 @@
 function [irr dry dryinit]=irrig(A,max_k,min_k,x,farm,init_k)
 
 if (x>=min_k );
-H= max_k-(min_k);
+H= init_k-(min_k);
 h=x-(min_k);
 a=A*43560 ;%converts acres into square feet
 r= (a./pi).^(1/2); %radius of the surface area of cone
